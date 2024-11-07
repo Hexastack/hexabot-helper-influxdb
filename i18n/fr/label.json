@@ -1,0 +1,8 @@
+{
+  "url": "Adresse",
+  "token": "Jeton API",
+  "organization": "Organisation",
+  "bucket": "Bucket",
+  "subjects": "Sujets",
+  "default_subject": "Sujet par défault"
+}
