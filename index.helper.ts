@@ -535,7 +535,7 @@ export default abstract class InfluxdbHelper
    *
    * @returns A promise representing the asynchronous operation of logging the event, resolved when the logging is completed.
    */
-  private logPluginEvent(
+  public logPluginEvent(
     pluginTitle: string,
     block: BlockFull,
     context: Context,
