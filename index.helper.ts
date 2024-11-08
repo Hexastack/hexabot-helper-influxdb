@@ -177,7 +177,7 @@ export default abstract class InfluxdbHelper
    */
   private getBlockFields(
     event: EventWrapper<any, any> | null,
-    block: Block,
+    block: BlockFull,
     context?: Context,
   ): InfluxFields {
     const payload = event && event.getPayload();
@@ -435,7 +435,7 @@ export default abstract class InfluxdbHelper
    */
   private logFallbackEvent(
     event: EventWrapper<any, any>,
-    block?: Block,
+    block?: BlockFull,
     context?: Context,
   ) {
     const subscriber = event.getSender();
