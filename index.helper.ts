@@ -380,7 +380,7 @@ export default abstract class InfluxdbHelper
    */
   private async logBlockEvent(
     event: EventWrapper<any, any>,
-    block: Block,
+    block: BlockFull,
     context: Context,
   ) {
     const subscriber = event.getSender();
