@@ -13,7 +13,7 @@ import slug from 'slug';
 
 import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
 import EventWrapper from '@/channel/lib/EventWrapper';
-import { Block } from '@/chat/schemas/block.schema';
+import { Block, BlockFull } from '@/chat/schemas/block.schema';
 import { Subscriber } from '@/chat/schemas/subscriber.schema';
 import { Context } from '@/chat/schemas/types/context';
 import { OutgoingMessage } from '@/chat/schemas/types/message';
@@ -599,7 +599,7 @@ export default abstract class InfluxdbHelper
 
   @OnEvent('hook:analytics:block')
   handleBlockTrigger(
-    block: Block,
+    block: BlockFull,
     event: EventWrapper<any, any>,
     context: Context,
   ) {
@@ -624,19 +624,12 @@ export default abstract class InfluxdbHelper
 
   @OnEvent('hook:analytics:fallback-local')
   handleLocalFallback(
-    block: Block,
+    block: BlockFull,
     event: EventWrapper<any, any>,
     context: Context,
   ) {
     if (event) {
       this.logFallbackEvent(event, block, context);
-    }
-  }
-
-  @OnEvent('hook:analytics:intervention-opened')
-  handleNewIntervention(subscriber: Subscriber) {
-    if (subscriber) {
-      this.logInterventionEvent(subscriber);
     }
   }
 
