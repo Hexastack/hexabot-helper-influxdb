@@ -28,7 +28,7 @@ import { INFLUXDB_HELPER_NAME } from './settings';
 import { InfluxFields, InfluxTags } from './types';
 
 @Injectable()
-export default abstract class InfluxdbHelper
+export default class InfluxdbHelper
   extends BaseHelper<typeof INFLUXDB_HELPER_NAME>
   implements OnApplicationBootstrap
 {
