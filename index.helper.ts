@@ -467,7 +467,7 @@ export default class InfluxdbHelper
    * @returns A promise representing the asynchronous operation of logging the event, resolved when the logging is successfully completed,
    *          or undefined if the subscriber was not assigned an intervention.
    */
-  private logInterventionEvent(subscriber: Subscriber) {
+  public logInterventionEvent(subscriber: Subscriber) {
     if (
       subscriber &&
       subscriber.assignedAt &&
