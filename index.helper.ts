@@ -86,7 +86,7 @@ export default class InfluxdbHelper
    */
   private getLanguage(event: EventWrapper<any, any>) {
     const subscriber = event.getSender();
-    let language: string;
+    let language: string | null = null;
     const nlp = event.getNLP();
     if (!!nlp && !!nlp.entities) {
       const entityLanguage = nlp.entities.find(
@@ -217,7 +217,7 @@ export default class InfluxdbHelper
   private getPluginFields(extraFields: { [key: string]: any }): InfluxFields {
     return Object.keys(extraFields).reduce((acc, key) => {
       let value = extraFields[key];
-      let type = null;
+      let type: string | null = null;
       if (typeof value === 'string') {
         type = 'string';
       } else if (typeof value === 'number') {
@@ -630,6 +630,13 @@ export default class InfluxdbHelper
   ) {
     if (event) {
       this.logFallbackEvent(event, block, context);
+    }
+  }
+
+  @OnEvent('hook:analytics:intervention')
+  handleNewIntervention(subscriber: Subscriber) {
+    if (subscriber) {
+      this.logInterventionEvent(subscriber);
     }
   }
 
