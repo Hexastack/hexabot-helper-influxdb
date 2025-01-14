@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { InfluxDB, Point } from '@influxdata/influxdb-client';
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import slug from 'slug';
+import { InfluxDB, Point } from "@influxdata/influxdb-client";
+import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import slug from "slug";
 
-import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { BlockFull } from '@/chat/schemas/block.schema';
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
-import { Context } from '@/chat/schemas/types/context';
-import { OutgoingMessage } from '@/chat/schemas/types/message';
-import { HelperService } from '@/helper/helper.service';
-import BaseHelper from '@/helper/lib/base-helper';
-import { HelperType } from '@/helper/types';
-import { LoggerService } from '@/logger/logger.service';
-import { Setting } from '@/setting/schemas/setting.schema';
-import { SettingService } from '@/setting/services/setting.service';
+import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { BlockFull } from "@/chat/schemas/block.schema";
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
+import { Context } from "@/chat/schemas/types/context";
+import { OutgoingMessage } from "@/chat/schemas/types/message";
+import { HelperService } from "@/helper/helper.service";
+import BaseHelper from "@/helper/lib/base-helper";
+import { HelperType } from "@/helper/types";
+import { LoggerService } from "@/logger/logger.service";
+import { Setting } from "@/setting/schemas/setting.schema";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { INFLUXDB_HELPER_NAME } from './settings';
-import { InfluxFields, InfluxTags } from './types';
+import { INFLUXDB_HELPER_NAME } from "./settings";
+import { InfluxFields, InfluxTags } from "./types";
 
 @Injectable()
 export default class InfluxdbHelper
@@ -39,7 +39,7 @@ export default class InfluxdbHelper
   constructor(
     settingService: SettingService,
     helperService: HelperService,
-    logger: LoggerService,
+    logger: LoggerService
   ) {
     super(INFLUXDB_HELPER_NAME, settingService, helperService, logger);
   }
@@ -57,7 +57,7 @@ export default class InfluxdbHelper
     });
   }
 
-  @OnEvent('hook:influxdb_helper:url')
+  @OnEvent("hook:influxdb_helper:url")
   async handleApiUrlChange(setting: Setting) {
     const settings = await this.getSettings();
 
@@ -67,7 +67,7 @@ export default class InfluxdbHelper
     });
   }
 
-  @OnEvent('hook:influxdb_helper:token')
+  @OnEvent("hook:influxdb_helper:token")
   async handleApiTokenChange(setting: Setting) {
     const settings = await this.getSettings();
 
@@ -90,7 +90,7 @@ export default class InfluxdbHelper
     const nlp = event.getNLP();
     if (!!nlp && !!nlp.entities) {
       const entityLanguage = nlp.entities.find(
-        (entity) => entity.entity === 'language',
+        (entity) => entity.entity === "language"
       );
       if (entityLanguage) {
         language = entityLanguage.value;
@@ -111,13 +111,13 @@ export default class InfluxdbHelper
    */
   private getMessageTags(event: EventWrapper<any, any>) {
     let tagsMap: { [tag: string]: string } = {
-      language: this.getLanguage(event) || 'unknown',
+      language: this.getLanguage(event) || "unknown",
     };
     // Populate tags with nlp entities/values (except language)
     const nlp = event.getNLP();
     if (nlp && nlp.entities) {
       tagsMap = nlp.entities
-        .filter((a) => !!a.entity && !!a.value && a.entity !== 'language')
+        .filter((a) => !!a.entity && !!a.value && a.entity !== "language")
         .reduce((acc, a) => {
           acc[a.entity] = a.value;
           return acc;
@@ -144,19 +144,19 @@ export default class InfluxdbHelper
   }: Subscriber): InfluxFields {
     return {
       recipient: {
-        type: 'string',
+        type: "string",
         value: id,
       },
       foreign_id: {
-        type: 'string',
+        type: "string",
         value: foreign_id,
       },
       first_name: {
-        type: 'string',
+        type: "string",
         value: first_name,
       },
       last_name: {
-        type: 'string',
+        type: "string",
         value: last_name,
       },
     };
@@ -178,26 +178,26 @@ export default class InfluxdbHelper
   private getBlockFields(
     event: EventWrapper<any, any> | null,
     block: BlockFull,
-    context?: Context,
+    context?: Context
   ): InfluxFields {
     const payload = event && event.getPayload();
     const postback =
-      typeof payload === 'string' ? payload : JSON.stringify(payload);
+      typeof payload === "string" ? payload : JSON.stringify(payload);
     return {
       block: {
-        type: 'string',
-        value: slug(block.name, ' '),
+        type: "string",
+        value: slug(block.name, " "),
       },
       postback: {
-        type: 'string',
+        type: "string",
         value: postback,
       },
       attempt: {
-        type: 'int',
+        type: "int",
         value: context && context.attempt ? context.attempt : 0,
       },
       start: {
-        type: 'boolean',
+        type: "boolean",
         value: block && block.starts_conversation,
       },
     };
@@ -218,15 +218,15 @@ export default class InfluxdbHelper
     return Object.keys(extraFields).reduce((acc, key) => {
       let value = extraFields[key];
       let type: string | null = null;
-      if (typeof value === 'string') {
-        type = 'string';
-      } else if (typeof value === 'number') {
-        type = 'float';
-      } else if (typeof value === 'boolean') {
-        type = 'boolean';
-      } else if (typeof value === 'object') {
+      if (typeof value === "string") {
+        type = "string";
+      } else if (typeof value === "number") {
+        type = "float";
+      } else if (typeof value === "boolean") {
+        type = "boolean";
+      } else if (typeof value === "object") {
         // like an error object for example
-        type = 'string';
+        type = "string";
         value = JSON.stringify(value);
       }
       return type
@@ -253,7 +253,7 @@ export default class InfluxdbHelper
    */
   private async getBlockSubject(blockName: string) {
     const { subjects, default_subject } = await this.getSettings();
-    const subjectsExp = new RegExp(`.*(${subjects.join('|')}).*`);
+    const subjectsExp = new RegExp(`.*(${subjects.join("|")}).*`);
     let subject = blockName.replace(subjectsExp, (str, caught) => caught);
     if (subjects.indexOf(subject) === -1) {
       subject = default_subject;
@@ -278,16 +278,16 @@ export default class InfluxdbHelper
     name: string,
     value: number,
     tags: InfluxTags,
-    fields: InfluxFields,
+    fields: InfluxFields
   ) {
     const { organization, bucket } = await this.getSettings();
-    const iWrite = this.client.getWriteApi(organization, bucket, 'ns');
+    const iWrite = this.client.getWriteApi(organization, bucket, "ns");
 
     // Create measure name
     const point = new Point(name);
 
     // Set value, 1 as count value, others for avg, sum, ...
-    point.floatField('value', value);
+    point.floatField("value", value);
 
     // Add extra fields
     Object.entries(fields)
@@ -307,10 +307,10 @@ export default class InfluxdbHelper
     try {
       iWrite.writePoint(point);
       const res = await iWrite.close();
-      this.logger.debug('InfluxDB Service: Successfully logged: ', name);
+      this.logger.debug("InfluxDB Service: Successfully logged: ", name);
       return res;
     } catch (err) {
-      this.logger.error('InfluxDB Service: Error sending analytic event', err);
+      this.logger.error("InfluxDB Service: Error sending analytic event", err);
     }
   }
 
@@ -328,15 +328,15 @@ export default class InfluxdbHelper
     const subscriber = event.getSender();
     const tags = {
       ...this.getMessageTags(event),
-      channel: event._handler.getName() || 'unknown',
-      type: 'message',
+      channel: event._handler.getName() || "unknown",
+      type: "message",
     };
     const fields = this.getSubscriberFields(subscriber);
     return this.logEvent(
-      `Event - ${slug('Message sent', ' ')}`,
+      `Event - ${slug("Message sent", " ")}`,
       1,
       tags,
-      fields,
+      fields
     );
   }
 
@@ -354,15 +354,15 @@ export default class InfluxdbHelper
     const subscriber = event.getSender();
     const tags = {
       ...this.getMessageTags(event),
-      channel: event._handler.getName() || 'unknown',
-      type: 'message',
+      channel: event._handler.getName() || "unknown",
+      type: "message",
     };
     const fields = this.getSubscriberFields(subscriber);
     return this.logEvent(
-      `Event - ${slug('Message received', ' ')}`,
+      `Event - ${slug("Message received", " ")}`,
       1,
       tags,
-      fields,
+      fields
     );
   }
 
@@ -381,13 +381,13 @@ export default class InfluxdbHelper
   private async logBlockEvent(
     event: EventWrapper<any, any>,
     block: BlockFull,
-    context: Context,
+    context: Context
   ) {
     const subscriber = event.getSender();
     const tags = {
       ...this.getMessageTags(event),
-      channel: event._handler.getName() || 'unknown',
-      type: 'block',
+      channel: event._handler.getName() || "unknown",
+      type: "block",
       subject: await this.getBlockSubject(block.name),
     };
     const fields: InfluxFields = {
@@ -410,14 +410,14 @@ export default class InfluxdbHelper
   private logHandoverEvent(subscriber: Subscriber, isHandover: boolean) {
     const tags = {
       channel: subscriber.channel && subscriber.channel.name,
-      type: 'passation',
+      type: "passation",
     };
     const fields = this.getSubscriberFields(subscriber);
     return this.logEvent(
-      `${isHandover ? 'Handover' : 'Handback'}`,
+      `${isHandover ? "Handover" : "Handback"}`,
       1,
       tags,
-      fields,
+      fields
     );
   }
 
@@ -436,23 +436,23 @@ export default class InfluxdbHelper
   private logFallbackEvent(
     event: EventWrapper<any, any>,
     block?: BlockFull,
-    context?: Context,
+    context?: Context
   ) {
     const subscriber = event.getSender();
     const tags = {
       ...this.getMessageTags(event),
-      channel: event._handler.getName() || 'unknown',
-      type: 'fallback',
+      channel: event._handler.getName() || "unknown",
+      type: "fallback",
     };
     const fields = {
       ...this.getSubscriberFields(subscriber),
       ...(block ? this.getBlockFields(event, block, context) : {}),
     };
     return this.logEvent(
-      `${block ? 'Local Fallback' : 'Global Fallback'}`,
+      `${block ? "Local Fallback" : "Global Fallback"}`,
       1,
       tags,
-      fields,
+      fields
     );
   }
 
@@ -475,49 +475,49 @@ export default class InfluxdbHelper
     ) {
       const tags = {
         channel: subscriber.channel && subscriber.channel.name,
-        type: 'intervention',
+        type: "intervention",
       };
       const currentDatetime = new Date();
       const delay = Math.abs(
-        currentDatetime.getTime() - subscriber.assignedAt.getTime(),
+        currentDatetime.getTime() - subscriber.assignedAt.getTime()
       );
 
       const fields: InfluxFields = {
         ...this.getSubscriberFields(subscriber),
         assigned_at: {
-          type: 'string',
+          type: "string",
           value: subscriber.assignedAt.toString(),
         },
         assigned_at_ts: {
-          type: 'int',
+          type: "int",
           value: subscriber.assignedAt.getTime(),
         },
         intervention_opened_at: {
-          type: 'string',
+          type: "string",
           value: currentDatetime.toString(),
         },
         intervention_opened_at_ts: {
-          type: 'int',
+          type: "int",
           value: currentDatetime.getTime(),
         },
         intervention_delay_sec: {
-          type: 'float',
+          type: "float",
           value: delay / 1000,
         },
         intervention_delay_min: {
-          type: 'float',
+          type: "float",
           value: delay / (60 * 1000),
         },
         intervention_delay_hour: {
-          type: 'float',
+          type: "float",
           value: delay / (60 * 60 * 1000),
         },
       };
       return this.logEvent(
-        'Intervention Opened',
+        "Intervention Opened",
         delay / (60 * 1000), // in minutes
         tags,
-        fields,
+        fields
       );
     }
   }
@@ -539,18 +539,18 @@ export default class InfluxdbHelper
     pluginTitle: string,
     block: BlockFull,
     context: Context,
-    extraFields: { [key: string]: any },
+    extraFields: { [key: string]: any }
   ) {
     const subscriber = context.user;
     const tags = {
-      channel: context && context.channel ? context.channel : 'unknown',
-      type: 'plugin',
+      channel: context && context.channel ? context.channel : "unknown",
+      type: "plugin",
     };
     const fields: InfluxFields = {
       ...this.getSubscriberFields(subscriber),
       ...this.getBlockFields(null, block, context),
       plugin: {
-        type: 'string',
+        type: "string",
         value: pluginTitle,
       },
       ...this.getPluginFields(extraFields),
@@ -569,10 +569,10 @@ export default class InfluxdbHelper
    *
    * @returns A promise representing the asynchronous operation of logging the event, resolved when the logging is successfully completed.
    */
-  private logStatEvent(
+  public logStatEvent(
     type: BotStatsType,
     name: string,
-    subscriber: Subscriber,
+    subscriber: Subscriber
   ) {
     const tags = {
       channel: subscriber.channel && subscriber.channel.name,
@@ -583,64 +583,64 @@ export default class InfluxdbHelper
     return this.logEvent(`Stats`, 1, tags, fields);
   }
 
-  @OnEvent('hook:chatbot:sent')
+  @OnEvent("hook:chatbot:sent")
   handleMessageSent(_sent: OutgoingMessage, event: EventWrapper<any, any>) {
     if (event) {
       this.logMessageSentEvent(event);
     }
   }
 
-  @OnEvent('hook:chatbot:received')
+  @OnEvent("hook:chatbot:received")
   handleMessageReceived(event: EventWrapper<any, any>) {
     if (event) {
       this.logMessageReceivedEvent(event);
     }
   }
 
-  @OnEvent('hook:analytics:block')
+  @OnEvent("hook:analytics:block")
   handleBlockTrigger(
     block: BlockFull,
     event: EventWrapper<any, any>,
-    context: Context,
+    context: Context
   ) {
     if (event && block && block.name) {
       this.logBlockEvent(event, block, context);
     }
   }
 
-  @OnEvent('hook:analytics:passation')
+  @OnEvent("hook:analytics:passation")
   handleHandover(subscriber: Subscriber, isHandover: boolean) {
     if (subscriber) {
       this.logHandoverEvent(subscriber, isHandover);
     }
   }
 
-  @OnEvent('hook:analytics:fallback-global')
+  @OnEvent("hook:analytics:fallback-global")
   handleGlobalFallback(event) {
     if (event) {
       this.logFallbackEvent(event);
     }
   }
 
-  @OnEvent('hook:analytics:fallback-local')
+  @OnEvent("hook:analytics:fallback-local")
   handleLocalFallback(
     block: BlockFull,
     event: EventWrapper<any, any>,
-    context: Context,
+    context: Context
   ) {
     if (event) {
       this.logFallbackEvent(event, block, context);
     }
   }
 
-  @OnEvent('hook:analytics:intervention')
+  @OnEvent("hook:analytics:intervention")
   handleNewIntervention(subscriber: Subscriber) {
     if (subscriber) {
       this.logInterventionEvent(subscriber);
     }
   }
 
-  @OnEvent('hook:stats:entry')
+  @OnEvent("hook:stats:entry")
   handleStatEntry(type: BotStatsType, name: string, subscriber: Subscriber) {
     switch (type) {
       case BotStatsType.new_users:
