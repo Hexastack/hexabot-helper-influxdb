@@ -569,7 +569,7 @@ export default class InfluxdbHelper
    *
    * @returns A promise representing the asynchronous operation of logging the event, resolved when the logging is successfully completed.
    */
-  private logStatEvent(
+  public logStatEvent(
     type: BotStatsType,
     name: string,
     subscriber: Subscriber,
