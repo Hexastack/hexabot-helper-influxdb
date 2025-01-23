@@ -1,6 +1,6 @@
 {
   "name": "hexabot-helper-influxdb",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "InfluxDB Advanced Analytics Helper for Hexabot",
   "scripts": {
     "release:patch": "npm version patch && git push origin main --tags",
