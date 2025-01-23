@@ -307,7 +307,7 @@ export default class InfluxdbHelper
     try {
       iWrite.writePoint(point);
       const res = await iWrite.close();
-      this.logger.debug('InfluxDB Service: Successfully logged: ', name);
+      this.logger.log('InfluxDB Service: Successfully logged: ', name);
       return res;
     } catch (err) {
       this.logger.error('InfluxDB Service: Error sending analytic event', err);
