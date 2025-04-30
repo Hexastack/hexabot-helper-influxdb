@@ -13,7 +13,7 @@ import slug from 'slug';
 
 import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
 import EventWrapper from '@/channel/lib/EventWrapper';
-import { BlockFull } from '@/chat/schemas/block.schema';
+import { BlockFull, Block } from '@/chat/schemas/block.schema';
 import { Subscriber } from '@/chat/schemas/subscriber.schema';
 import { Context } from '@/chat/schemas/types/context';
 import { OutgoingMessage } from '@/chat/schemas/types/message';
@@ -537,7 +537,7 @@ export default class InfluxdbHelper
    */
   public logPluginEvent(
     pluginTitle: string,
-    block: BlockFull,
+    block: BlockFull | Block,
     context: Context,
     extraFields: { [key: string]: any },
   ) {
