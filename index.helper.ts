@@ -30,8 +30,7 @@ import { InfluxFields, InfluxTags } from './types';
 @Injectable()
 export default class InfluxdbHelper
   extends BaseHelper<typeof INFLUXDB_HELPER_NAME>
-  implements OnApplicationBootstrap
-{
+  implements OnApplicationBootstrap {
   protected readonly type: HelperType = HelperType.UTIL;
 
   private client: InfluxDB;
@@ -48,9 +47,18 @@ export default class InfluxdbHelper
     return __dirname;
   }
 
+  private isValidInfluxUrl(url: string): boolean {
+    // Accept only http:// or https://
+    return /^https?:\/\//i.test(url);
+  }
   async onApplicationBootstrap() {
     const settings = await this.getSettings();
-
+    if (!this.isValidInfluxUrl(settings.url)) {
+      this.logger.error(
+        `Invalid InfluxDB URL: "${settings.url}". Must start with http:// or https://`
+      );
+      return;
+    }
     this.client = new InfluxDB({
       url: settings.url,
       token: settings.token,
@@ -60,7 +68,12 @@ export default class InfluxdbHelper
   @OnEvent('hook:influxdb_helper:url')
   async handleApiUrlChange(setting: Setting) {
     const settings = await this.getSettings();
-
+    if (!this.isValidInfluxUrl(setting.value)) {
+      this.logger.error(
+        `Invalid InfluxDB URL: "${setting.value}". Must start with http:// or https://`
+      );
+      return;
+    }
     this.client = new InfluxDB({
       url: setting.value,
       token: settings.token,
@@ -231,12 +244,12 @@ export default class InfluxdbHelper
       }
       return type
         ? {
-            ...acc,
-            [key]: {
-              type,
-              value,
-            },
-          }
+          ...acc,
+          [key]: {
+            type,
+            value,
+          },
+        }
         : acc;
     }, {});
   }
