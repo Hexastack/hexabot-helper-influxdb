@@ -1,12 +1,9 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2024 Hexastack. All rights reserved.
  *
- * This software is licensed under a proprietary license.
- * Unauthorized copying, distribution, modification, or use of this software, in whole or in part, is strictly prohibited without prior written permission from Hexastack.
- *
+ * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
- * 3. Use of this software is restricted to authorized licensees only and subject to the terms of the licensing agreement provided by Hexastack.
  */
 
 import { HelperSetting } from '@/helper/types';
