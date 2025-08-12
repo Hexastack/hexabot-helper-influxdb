@@ -4,5 +4,6 @@
   "organization": "Organisation",
   "bucket": "Bucket",
   "subjects": "Sujets",
-  "default_subject": "Sujet par défault"
+  "default_subject": "Sujet par défault",
+  "subject_tagname": "Le nom du tag pour le sujet (`subject` par défaut)"
 }
