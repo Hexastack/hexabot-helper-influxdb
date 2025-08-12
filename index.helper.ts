@@ -383,13 +383,17 @@ export default class InfluxdbHelper
     block: BlockFull,
     context: Context,
   ) {
+    const settings = await this.getSettings();
     const subscriber = event.getSender();
+    const subjectKey = settings.subject_tagname || 'subject';
     const tags = {
       ...this.getMessageTags(event),
       channel: event._handler.getName() || 'unknown',
       type: 'block',
-      subject: await this.getBlockSubject(block.name),
+      [subjectKey]: await this.getBlockSubject(block.name),
+      category: block.category?.label || 'unknown',
     };
+
     const fields: InfluxFields = {
       ...this.getSubscriberFields(subscriber),
       ...this.getBlockFields(event, block, context),
